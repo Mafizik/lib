@@ -1,40 +1,36 @@
 --[[
-	Автор: mafizik.
-	В библиотеки содержатся следующие функции:
-	1. sendTelegramMessage("text") -- Отправка сообщения в телеграм,
-	Примечание:
-	    Необходимо добавить 2 переменные(не локальные) в скрипт:
+	РђРІС‚РѕСЂ: mafizik.
+	Р’ Р±РёР±Р»РёРѕС‚РµРєРё СЃРѕРґРµСЂР¶Р°С‚СЃСЏ СЃР»РµРґСѓСЋС‰РёРµ С„СѓРЅРєС†РёРё:
+	1. sendTelegramMessage("text") -- РћС‚РїСЂР°РІРєР° СЃРѕРѕР±С‰РµРЅРёСЏ РІ С‚РµР»РµРіСЂР°Рј,
+	РџСЂРёРјРµС‡Р°РЅРёРµ:
+	    РќРµРѕР±С…РѕРґРёРјРѕ РґРѕР±Р°РІРёС‚СЊ 2 РїРµСЂРµРјРµРЅРЅС‹Рµ(РЅРµ Р»РѕРєР°Р»СЊРЅС‹Рµ) РІ СЃРєСЂРёРїС‚:
 		1. telegram_chatID = "ID"
 		2. telegram_token = "token"
-	2. msg("text") -- Отправляет соообщение в чат с цветом -1,
-	3. downloads_file("url_to_file") -- Скачивает файл,
-	4. autoupdate("url_to_github") -- Проверяет файл с гитхаба на версию и скачивает новую версию,
-	    Примечание:
-	        1. script_name должен соотвествовать названию файла file_name.json,
-	        2. файл file_name.json должен состоять так:
+	2. msg("text") -- РћС‚РїСЂР°РІР»СЏРµС‚ СЃРѕРѕРѕР±С‰РµРЅРёРµ РІ С‡Р°С‚ СЃ С†РІРµС‚РѕРј -1,
+	3. downloads_file("url_to_file") -- РЎРєР°С‡РёРІР°РµС‚ С„Р°Р№Р»,
+	4. autoupdate("url_to_github") -- РџСЂРѕРІРµСЂСЏРµС‚ С„Р°Р№Р» СЃ РіРёС‚С…Р°Р±Р° РЅР° РІРµСЂСЃРёСЋ Рё СЃРєР°С‡РёРІР°РµС‚ РЅРѕРІСѓСЋ РІРµСЂСЃРёСЋ,
+	    РџСЂРёРјРµС‡Р°РЅРёРµ:
+	        1. script_name РґРѕР»Р¶РµРЅ СЃРѕРѕС‚РІРµСЃС‚РІРѕРІР°С‚СЊ РЅР°Р·РІР°РЅРёСЋ С„Р°Р№Р»Р° file_name.json,
+	        2. С„Р°Р№Р» file_name.json РґРѕР»Р¶РµРЅ СЃРѕСЃС‚РѕСЏС‚СЊ С‚Р°Рє:
 	            {
 		            "version": "date",
                     "updateurl": "url_to_file",
 	            }
-	5. sampGetPlayerIdByNickname("Nick_Name") -- Получает айди игрока по его нику,
-	6. imgui.TextColoredRGB("text") -- Позволяет менять цвет текста в мимгуи окне.
+	5. sampGetPlayerIdByNickname("Nick_Name") -- РџРѕР»СѓС‡Р°РµС‚ Р°Р№РґРё РёРіСЂРѕРєР° РїРѕ РµРіРѕ РЅРёРєСѓ,
+	6. imgui.TextColoredRGB("text") -- РџРѕР·РІРѕР»СЏРµС‚ РјРµРЅСЏС‚СЊ С†РІРµС‚ С‚РµРєСЃС‚Р° РІ РјРёРјРіСѓРё РѕРєРЅРµ.
   7. getAmmoByGunId(id) 
-  8. imgui.TextQuestion(label, description) -- Подсказка. Первый аргумент - иконка. Второй аргумент - текст.
-  9. imgui.CenterText(text) -- меняет местоположение текста на середину.
+  8. imgui.TextQuestion(label, description) -- РџРѕРґСЃРєР°Р·РєР°. РџРµСЂРІС‹Р№ Р°СЂРіСѓРјРµРЅС‚ - РёРєРѕРЅРєР°. Р’С‚РѕСЂРѕР№ Р°СЂРіСѓРјРµРЅС‚ - С‚РµРєСЃС‚.
+  9. imgui.CenterText(text) -- РјРµРЅСЏРµС‚ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ С‚РµРєСЃС‚Р° РЅР° СЃРµСЂРµРґРёРЅСѓ.
   11. imgui.PageButton(bool, icon, name, but_wide)
   10. imgui.ToggleButtonText(text, bool, is_toggle)
   11. imgui.ToggleButtonTextGear(text, bool, is_toggle, is_render_gear, is_click_gear)
-  12. mimguiGreyStyle() -- темно-серый стиль для мимгуи окна.
-  13. getTextdrawByPos(x, y) -- проверяет текстдрав на позицию.
+  12. mimguiGreyStyle() -- С‚РµРјРЅРѕ-СЃРµСЂС‹Р№ СЃС‚РёР»СЊ РґР»СЏ РјРёРјРіСѓРё РѕРєРЅР°.
+  13. getTextdrawByPos(x, y) -- РїСЂРѕРІРµСЂСЏРµС‚ С‚РµРєСЃС‚РґСЂР°РІ РЅР° РїРѕР·РёС†РёСЋ.
   14. fps_correction()
 ]]
 
-local encoding = require('encoding')
 local effil = require('effil')
 local imgui = require('mimgui')
-local keys = require('vkeys')
-encoding.default = 'CP1251';
-local u8 = encoding.UTF8;
 
 local effilTelegramSendMessage = effil.thread(function(telegram_text, telegram_chatID, telegram_token)
 	local requests = require('requests')
@@ -54,7 +50,7 @@ local url_encoding = function(text)
 end
 
 function sendTelegramMessage(text)
-    effilTelegramSendMessage(url_encoding(u8(text)), telegram_chatID, telegram_token)
+    effilTelegramSendMessage(url_encoding(text), telegram_chatID, telegram_token)
 end
 
 function sampMessage(text)
@@ -97,7 +93,7 @@ function imgui.TextQuestion(label, description)
 end
 
 function imgui.CenterText(text)
-	imgui.SetCursorPosX(imgui.GetWindowWidth()/2-imgui.CalcTextSize(u8(text)).x/2)
+	imgui.SetCursorPosX(imgui.GetWindowWidth()/2-imgui.CalcTextSize(text).x/2)
 	imgui.Text(text)
 end
 
@@ -186,8 +182,8 @@ function autoupdate(php)
                     local dlstatus = require("moonloader").download_status
                     local color = -1
                     sampAddChatMessage(
-                      ("{C0C0C0}["..thisScript().name.."]{FFFFFF} Обнаружено обновление. Пытаюсь обновиться c версии " ..
-                      thisScript().version .. " на версию " .. updateversion),
+                      ("{C0C0C0}["..thisScript().name.."]{FFFFFF} РћР±РЅР°СЂСѓР¶РµРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ. РџС‹С‚Р°СЋСЃСЊ РѕР±РЅРѕРІРёС‚СЊСЃСЏ c РІРµСЂСЃРёРё " ..
+                      thisScript().version .. " РЅР° РІРµСЂСЃРёСЋ " .. updateversion),
                       color
                     )
                     wait(250)
@@ -196,11 +192,11 @@ function autoupdate(php)
                       thisScript().path,
                       function(id3, status1, p13, p23)
                         if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                          print(string.format("Загружено %d из %d.", p13, p23))
+                          print(string.format("Р—Р°РіСЂСѓР¶РµРЅРѕ %d РёР· %d.", p13, p23))
                         elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                          print("Загрузка обновления завершена.")
+                          print("Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ Р·Р°РІРµСЂС€РµРЅР°.")
                             sampAddChatMessage(
-                              ("{C0C0C0}["..thisScript().name.."]{FFFFFF} Обновление завершено!"),
+                              ("{C0C0C0}["..thisScript().name.."]{FFFFFF} РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ!"),
                               color
                         )
                           lua_thread.create(
@@ -217,14 +213,14 @@ function autoupdate(php)
                 )
               else
                 update = false
-                print("v" .. thisScript().version .. ": Обновление не требуется.")
+                print("v" .. thisScript().version .. ": РћР±РЅРѕРІР»РµРЅРёРµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ.")
               end
             end
           else
             print(
               "v" ..
               thisScript().version ..
-              ": Не могу проверить обновление."
+              ": РќРµ РјРѕРіСѓ РїСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ."
             )
             update = false
           end
