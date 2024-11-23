@@ -31,6 +31,8 @@
 
 local effil = require('effil')
 local imgui = require('mimgui')
+encoding.default = 'UTF8';
+local u8 = encoding.CP1251;
 
 local effilTelegramSendMessage = effil.thread(function(telegram_text, telegram_chatID, telegram_token)
 	local requests = require('requests')
@@ -182,8 +184,8 @@ function autoupdate(php)
                     local dlstatus = require("moonloader").download_status
                     local color = -1
                     sampAddChatMessage(
-                      ("{C0C0C0}["..thisScript().name.."]{FFFFFF} Обнаружено обновление. Пытаюсь обновиться c версии " ..
-                      thisScript().version .. " на версию " .. updateversion),
+                      ("{C0C0C0}["..thisScript().name.u8("]{FFFFFF} Обнаружено обновление. Пытаюсь обновиться c версии ") ..
+                      thisScript().version .. u8(" на версию ") .. updateversion),
                       color
                     )
                     wait(250)
@@ -192,11 +194,11 @@ function autoupdate(php)
                       thisScript().path,
                       function(id3, status1, p13, p23)
                         if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                          print(string.format("Загружено %d из %d.", p13, p23))
+                          print(string.format(u8"Загружено %d из %d.", p13, p23))
                         elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                          print("Загрузка обновления завершена.")
+                          print(u8("Загрузка обновления завершена."))
                             sampAddChatMessage(
-                              ("{C0C0C0}["..thisScript().name.."]{FFFFFF} Обновление завершено!"),
+                              ("{C0C0C0}["..thisScript().name..u8("]{FFFFFF} Обновление завершено!")),
                               color
                         )
                           lua_thread.create(
@@ -213,14 +215,14 @@ function autoupdate(php)
                 )
               else
                 update = false
-                print("v" .. thisScript().version .. ": Обновление не требуется.")
+                print("v" .. thisScript().version .. u8": Обновление не требуется.")
               end
             end
           else
             print(
               "v" ..
               thisScript().version ..
-              ": Не могу проверить обновление."
+              u8": Не могу проверить обновление."
             )
             update = false
           end
