@@ -31,6 +31,7 @@
 
 local effil = require('effil')
 local imgui = require('mimgui')
+local encoding = require('encoding')
 encoding.default = 'UTF8';
 local u8 = encoding.CP1251;
 
