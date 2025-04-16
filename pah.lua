@@ -1,6 +1,6 @@
 local effil_status, effil = pcall(require, 'effil')
 function asyncHttpRequests(method, url, args, resolve, reject)
-  if effil_Status then
+  if effil_status then
     local request_thread = effil.thread(function (method, url, args)
        local requests = require 'requests'
        local result, response = pcall(requests.request, method, url, args)
