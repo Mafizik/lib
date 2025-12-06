@@ -44,6 +44,13 @@ local function get_xbutton_id(lparam)
     end
     return 0
 end
+local specialKeys = {
+	0x10,
+	0x11,
+	0x12,
+	0xA4,
+	0xA5
+}
 
 deepcopy = function(orig)
 	local orig_type = type(orig)
@@ -60,6 +67,15 @@ deepcopy = function(orig)
 	return copy
 end
 
+
+local keyIsSpecial = function(key)
+	for k, v in ipairs(specialKeys) do
+		if v == key then
+			return true
+		end
+	end
+	return false
+end
 
 local getKeysText = function(name)
 	local keysText = {}
@@ -183,8 +199,12 @@ addEventHandler('onWindowMessage', function(msg, key, lparam)
 				end
 				if not found then
 					table.insert(HOTKEY.ActiveKeys, processedKey)
-					searchHotKey(HOTKEY.ActiveKeys)
-					table.remove(HOTKEY.ActiveKeys)
+					if keyIsSpecial(key) then
+						table.sort(HOTKEY.ActiveKeys)
+					else
+						searchHotKey(HOTKEY.ActiveKeys)
+						table.remove(HOTKEY.ActiveKeys)
+					end
 				end
 			end
 		else 
@@ -204,12 +224,34 @@ addEventHandler('onWindowMessage', function(msg, key, lparam)
 					end
 				end
 				if not found then
-					table.insert(HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys, processedKey)
-					HOTKEY.ReturnHotKeys = HOTKEY.HotKeyIsEdit.NameHotKey
-					HOTKEY.HotKeyIsEdit = nil
+					if keyIsSpecial(key) then
+						if not HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].soloKey then
+							for k, v in ipairs(specialKeys) do
+								if key == v then
+									table.insert(HOTKEY.HotKeyIsEdit.ActiveKeys, v)
+								end
+							end
+							table.sort(HOTKEY.HotKeyIsEdit.ActiveKeys)
+							HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys = HOTKEY.HotKeyIsEdit.ActiveKeys
+						end
+					else
+						table.insert(HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys, processedKey)
+						HOTKEY.ReturnHotKeys = HOTKEY.HotKeyIsEdit.NameHotKey
+						HOTKEY.HotKeyIsEdit = nil
+					end
 				end
 			end
 			consumeWindowMessage(true, true)
+		end
+	elseif msg == 0x101 or msg == 261 then
+		if keyIsSpecial(key) then
+			local pizdec = HOTKEY.HotKeyIsEdit ~= nil and HOTKEY.HotKeyIsEdit.ActiveKeys or HOTKEY.ActiveKeys
+			for k, v in ipairs(pizdec) do
+				if v == key then
+					table.remove(pizdec, k)
+					break
+				end
+			end
 		end
 	end
 end)
