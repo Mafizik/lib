@@ -45,7 +45,6 @@ local function get_xbutton_id(lparam)
     return 0
 end
 local specialKeys = {
-	0x10,
 	0x11,
 	0x12,
 	0xA4,
@@ -257,3 +256,4 @@ addEventHandler('onWindowMessage', function(msg, key, lparam)
 end)
 
 return HOTKEY
+
