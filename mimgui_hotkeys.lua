@@ -1,6 +1,6 @@
 --[[
 	   
-	Author: СоМиК
+	Author: СоМиК (модифицировано для поддержки XButton 1 и 2)
 	Links:
 		- https://www.blast.hk/members/406277/
 		- https://t.me/klamet_one
@@ -14,7 +14,7 @@ local vk = require 'vkeys'
 HOTKEY = {
 	MODULEINFO = {
 		version = 1,
-		author = 'СоМиК'
+		author = 'СоМиК and AI'
 	},
 	Text = {
 		WaitForKey = 'Нажмите любую клавишу...',
@@ -29,13 +29,21 @@ HOTKEY = {
 	True = true
 }
 
-local specialKeys = {
-	0x10,
-	0x11,
-	0x12,
-	0xA4,
-	0xA5
-}
+local WM_XBUTTONDOWN = 0x020B
+local WM_XBUTTONUP = 0x020C
+local MK_XBUTTON1 = 0x0020
+local MK_XBUTTON2 = 0x0040
+local VK_XBUTTON1 = 0x05
+local VK_XBUTTON2 = 0x06
+
+local function get_xbutton_id(lparam)
+    if bit.band(lparam, MK_XBUTTON1) ~= 0 then 
+        return VK_XBUTTON1
+    elseif bit.band(lparam, MK_XBUTTON2) ~= 0 then 
+        return VK_XBUTTON2
+    end
+    return 0
+end
 
 deepcopy = function(orig)
 	local orig_type = type(orig)
@@ -52,20 +60,12 @@ deepcopy = function(orig)
 	return copy
 end
 
-local keyIsSpecial = function(key)
-	for k, v in ipairs(specialKeys) do
-		if v == key then
-			return true
-		end
-	end
-	return false
-end
 
 local getKeysText = function(name)
 	local keysText = {}
 	if HOTKEY.List[name] ~= nil then
 		for k, v in ipairs(HOTKEY.List[name].keys) do
-			table.insert(keysText, vk.id_to_name(v))
+			table.insert(keysText, vk.id_to_name(v)) 
 		end
 	end
 	return table.concat(keysText, ' + ')
@@ -166,71 +166,50 @@ HOTKEY.GetHotKey = setmetatable(
 )
 
 addEventHandler('onWindowMessage', function(msg, key, lparam)
-	if msg == 0x100 or msg == 260 then
+    local processedKey = key
+    if msg == WM_XBUTTONDOWN or msg == WM_XBUTTONUP then
+        processedKey = get_xbutton_id(key) 
+    end
+
+    if msg == 0x100 or msg == 260 or msg == WM_XBUTTONDOWN then 
 		if HOTKEY.HotKeyIsEdit == nil then
-			if key ~= HOTKEY.CancelKey and key ~= HOTKEY.RemoveKey and key ~= 0x1B and key ~= 0x08 and next(HOTKEY.List) then
+			if processedKey ~= HOTKEY.CancelKey and processedKey ~= HOTKEY.RemoveKey and processedKey ~= 0x1B and processedKey ~= 0x08 and next(HOTKEY.List) then
 				local found = false
 				for k, v in ipairs(HOTKEY.ActiveKeys) do
-					if v == key then
+					if v == processedKey then
 						found = true
 						break
 					end
 				end
 				if not found then
-					table.insert(HOTKEY.ActiveKeys, key)
-					if keyIsSpecial(key) then
-						table.sort(HOTKEY.ActiveKeys)
-					else
-						searchHotKey(HOTKEY.ActiveKeys)
-						table.remove(HOTKEY.ActiveKeys)
-					end
+					table.insert(HOTKEY.ActiveKeys, processedKey)
+					searchHotKey(HOTKEY.ActiveKeys)
+					table.remove(HOTKEY.ActiveKeys)
 				end
 			end
-		else
-			if key == HOTKEY.CancelKey then
+		else 
+			if processedKey == HOTKEY.CancelKey then
 				HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys = HOTKEY.HotKeyIsEdit.BackupHotKeyKeys
 				HOTKEY.HotKeyIsEdit = nil
-			elseif key == HOTKEY.RemoveKey then
+			elseif processedKey == HOTKEY.RemoveKey then
 				HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys = {}
 				HOTKEY.ReturnHotKeys = HOTKEY.HotKeyIsEdit.NameHotKey
 				HOTKEY.HotKeyIsEdit = nil
-			elseif key ~= 0x1B and key ~= 0x08 then
+			elseif processedKey ~= 0x1B and processedKey ~= 0x08 then
 				local found = false
 				for k, v in ipairs(HOTKEY.HotKeyIsEdit.ActiveKeys) do
-					if v == key then
+					if v == processedKey then
 						found = true
 						break
 					end
 				end
 				if not found then
-					if keyIsSpecial(key) then
-						if not HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].soloKey then
-							for k, v in ipairs(specialKeys) do
-								if key == v then
-									table.insert(HOTKEY.HotKeyIsEdit.ActiveKeys, v)
-								end
-							end
-							table.sort(HOTKEY.HotKeyIsEdit.ActiveKeys)
-							HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys = HOTKEY.HotKeyIsEdit.ActiveKeys
-						end
-					else
-						table.insert(HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys, key)
-						HOTKEY.ReturnHotKeys = HOTKEY.HotKeyIsEdit.NameHotKey
-						HOTKEY.HotKeyIsEdit = nil
-					end
+					table.insert(HOTKEY.List[HOTKEY.HotKeyIsEdit.NameHotKey].keys, processedKey)
+					HOTKEY.ReturnHotKeys = HOTKEY.HotKeyIsEdit.NameHotKey
+					HOTKEY.HotKeyIsEdit = nil
 				end
 			end
 			consumeWindowMessage(true, true)
-		end
-	elseif msg == 0x101 or msg == 261 then
-		if keyIsSpecial(key) then
-			local pizdec = HOTKEY.HotKeyIsEdit ~= nil and HOTKEY.HotKeyIsEdit.ActiveKeys or HOTKEY.ActiveKeys
-			for k, v in ipairs(pizdec) do
-				if v == key then
-					table.remove(pizdec, k)
-					break
-				end
-			end
 		end
 	end
 end)
